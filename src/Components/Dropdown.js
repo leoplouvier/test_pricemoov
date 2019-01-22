@@ -3,11 +3,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
 const Dropdown = props => {
-    console.log(typeof(props.items))
     return (
     <Select
+      disabled={props.disabled}
       value={props.value}
-      placeholder="choose"
       onChange={props.handleChange}
       inputProps={{
         name: props.name,
