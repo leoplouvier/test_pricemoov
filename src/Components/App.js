@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Dropdown from "./Dropdown";
 import Price from "./Price";
+import Filter from "./Filter";
 
 class App extends Component {
   state = {
@@ -9,34 +10,64 @@ class App extends Component {
     agencies: [],
     categories: [],
     disableCat: true,
-    prices: []
+    prices: [],
+    filter: "All",
+    activeFilter: () => { return true }
   };
 
   fetchData = async url => {
-    var response = await fetch(url)
-    var json = await response.json()
-    var data =JSON.parse(JSON.stringify(json))
-    return data
-  }
+    var response = await fetch(url);
+    var json = await response.json();
+    var data = JSON.parse(JSON.stringify(json));
+    return data;
+  };
 
   handleChange = async event => {
     this.setState({ [event.target.name]: event.target.value });
     if (event.target.name === "agencie") {
       var id = this.state.agencies.find(a => a.name === event.target.value).id;
-      var categories = await this.fetchData("http://5ae97684531a58001414278c.mockapi.io/agencies/"+id+"/categories")
-      this.setState({ categories: categories, disableCat:false });
+      var categories = await this.fetchData(
+        "http://5ae97684531a58001414278c.mockapi.io/agencies/" +
+          id +
+          "/categories"
+      );
+      this.setState({ categories: categories, disableCat: false, prices: [] });
     }
     if (event.target.name === "categorie") {
       var aid = this.state.agencies.find(a => a.name === this.state.agencie).id;
-      var cid = this.state.categories.find(c => c.name === event.target.value).id;
-        var prices = await this.fetchData("http://5ae97684531a58001414278c.mockapi.io/agencies/"+aid+"/categories/"+cid+"/prices")
-        this.setState({ prices: prices });
+      var cid = this.state.categories.find(c => c.name === event.target.value)
+        .id;
+      var prices = await this.fetchData(
+        "http://5ae97684531a58001414278c.mockapi.io/agencies/" +
+          aid +
+          "/categories/" +
+          cid +
+          "/prices"
+      );
+      this.setState({ prices: prices });
+    }
+  };
+
+  handleFliterChange = event => {
+    this.setState({ filter: event.target.value });
+    switch (event.target.value) {
+      case "Validated":
+        this.setState({ activeFilter: (isValid) => isValid === true });
+        break;
+      case "Not validated":
+        this.setState({ activeFilter: (isValid) => isValid === false });
+        break;
+      default:
+        this.setState({ activeFilter: () =>  true });
+        break;
     }
   };
 
   componentDidMount = async () => {
-    var agencies = await this.fetchData("http://5ae97684531a58001414278c.mockapi.io/agencies")
-        this.setState({ agencies: agencies });
+    var agencies = await this.fetchData(
+      "http://5ae97684531a58001414278c.mockapi.io/agencies"
+    );
+    this.setState({ agencies: agencies });
   };
 
   render() {
@@ -64,18 +95,29 @@ class App extends Component {
             handleChange={this.handleChange}
           />
         </div>
-        {this.state.prices !== [] &&
+        {this.state.prices.length !== 0 &&
           this.state.prices.map(p => {
-            return (
-              <Price
-                key={p.id}
-                date={p.startDate}
-                price={p.price}
-                suggestedPrice={p.suggestedPrice}
-                validated={p.isValidated}
-              />
-            );
+            if (this.state.activeFilter(p.isValidated)) {
+              return (
+                <Price
+                  key={p.id}
+                  date={p.startDate}
+                  price={p.price}
+                  suggestedPrice={p.suggestedPrice}
+                  validated={p.isValidated}
+                />
+              );
+            } else return "";
           })}
+        {this.state.prices.length !== 0 && (
+          <Filter
+            legend="Filter"
+            name="filter"
+            value={this.state.filter}
+            labels={["All", "Validated", "Not validated"]}
+            handleChange={this.handleFliterChange}
+          />
+        )}
       </div>
     );
   }
