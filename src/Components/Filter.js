@@ -7,13 +7,14 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 const Filter = props => {
   return (
-    <FormControl component="fieldset">
+    <FormControl component="fieldset" style={{marginTop: 10}}>
           <FormLabel component="legend">{props.legend}</FormLabel>
           <RadioGroup
             aria-label={props.legend}
             name={props.name}
             value={props.value}
             onChange={props.handleChange}
+            style={{display: "flex", flexDirection:"row"}}
           >
           {props.labels.map(l=> <FormControlLabel key ={l} value={l} control={<Radio />} label={l} />)}
           </RadioGroup>

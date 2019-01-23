@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Dropdown from "./Dropdown";
 import Price from "./Price";
 import Filter from "./Filter";
+import './App.css'
 
 class App extends Component {
   state = {
@@ -73,8 +74,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div id="agencies">
-          Agencies :
+        <div className="selectorContainer">
+          Agencies :   
           <Dropdown
             disabled={false}
             value={this.state.agencie}
@@ -84,8 +85,8 @@ class App extends Component {
             handleChange={this.handleChange}
           />
         </div>
-        <div id="cat">
-          Categories :
+        <div className="selectorContainer">
+          Categories :   
           <Dropdown
             disabled={this.state.disableCat}
             value={this.state.categorie}
@@ -95,6 +96,7 @@ class App extends Component {
             handleChange={this.handleChange}
           />
         </div>
+        <div>
         {this.state.prices.length !== 0 &&
           this.state.prices.map(p => {
             if (this.state.activeFilter(p.isValidated)) {
@@ -118,6 +120,7 @@ class App extends Component {
             handleChange={this.handleFliterChange}
           />
         )}
+      </div>
       </div>
     );
   }
