@@ -21,8 +21,11 @@ const Price = props => {
   var date = new Date(props.date);
   return (
     <Paper className={classes.paper}>
+    <Typography variant="caption" gutterBottom color="primary" style={{alignSelf: "flex-start"}}>
+      {date.toLocaleDateString()}
+      </Typography>
       <Typography variant="h6" gutterBottom color="primary">
-        {date.toLocaleDateString() + " |"}
+        {date.toLocaleTimeString() + " |"}
       </Typography>
       <Typography variant="subtitle1" gutterBottom className={classes.spaceLeft}>
         price :

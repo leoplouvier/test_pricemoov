@@ -45,6 +45,7 @@ class App extends Component {
           cid +
           "/prices"
       );
+      prices.sort((a,b)=>a.startDate-b.startDate)
       this.setState({ prices: prices });
     }
   };
